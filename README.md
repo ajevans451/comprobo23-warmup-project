@@ -36,6 +36,26 @@ hping3
 ### Source Code
 As of September 2023, the homepage for this project is [github/ajevans451/comprobo23-warmup-project](https://github.com/ajevans451/comprobo23-warmup-project).
 
+## Behaviors
+For each behavior, describe the problem at a high-level. Include any relevant diagrams that help explain your approach.  Discuss your strategy at a high-level and include any tricky decisions that had to be made to realize a successful implementation.
+### Finite State Controller
+For the finite state controller, what was the overall behavior. What were the states? What did the robot do in each state? How did you combine and how did you detect when to transition between behaviors?  Consider including a state transition diagram in your writeup.
+### Object-Oriented Structure
+How was your code structured? Make sure to include a sufficient detail about the object-oriented structure you used for your project.
+#### foo 
+
+#### bar
+
+## Reflection
+What if any challenges did you face along the way?
+### Room for Improvement
+What would you do to improve your project if you had more time?
+### Key Takeaways
+What are the key takeaways from this assignment for future robotic programming projects? For each takeaway, provide a sentence or two of elaboration.
+#### foo
+
+#### Barbie
+
 ## Authors
 
 CJ Hilty [(github)](https://github.com/cjhi) \
