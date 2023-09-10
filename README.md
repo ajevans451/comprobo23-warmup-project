@@ -38,6 +38,11 @@ As of September 2023, the homepage for this project is [github/ajevans451/compro
 
 ## Behaviors
 For each behavior, describe the problem at a high-level. Include any relevant diagrams that help explain your approach.  Discuss your strategy at a high-level and include any tricky decisions that had to be made to realize a successful implementation.
+### Custom Teleop
+### Wall Following
+### Square Drive
+### Person Following
+### Obstacle Avoidance
 ### Finite State Controller
 For the finite state controller, what was the overall behavior. What were the states? What did the robot do in each state? How did you combine and how did you detect when to transition between behaviors?  Consider including a state transition diagram in your writeup.
 ### Object-Oriented Structure
