@@ -150,28 +150,36 @@ if __name__=="__main__":
 		print(txt)
 		print(vels(speed,turn))
 		while(1):
-            key = getKey(settings, key_timeout)
-            if key in moveBindings.keys():
-                x = directionsBindings[key][0]
-                th = directionsBindings[key][1]
-            elif key in speedBindings.keys():
-                speed = min(speed_limit, speed * speedBindings[key][0])
-                turn = min(turn_limit, turn * speedBindings[key][1])
-                if speed == speed_limit:
-                    print("Linear speed limit reached!")
-                if turn == turn_limit:
-                    print("Angular speed limit reached!")
-                print(vels(speed,turn))
-                if (status == 14):
-                    print(msg)
-                status = (status + 1) % 15
-		
-		
-	
-key = None
+			key = getKey(settings, key_timeout)
+			if key in moveBindings.keys():
+				x = directionsBindings[key][0]
+				th = directionsBindings[key][1]
+			elif key in speedBindings.keys():
+				speed = min(speed_limit, speed * speedBindings[key][0])
+				turn = min(turn_limit, turn * speedBindings[key][1])
+				if speed == speed_limit:
+				    print("Linear speed limit reached!")
+				if turn == turn_limit:
+				    print("Angular speed limit reached!")
+				print(vels(speed,turn))
+				if (status == 14):
+				    print(msg)
+				status = (status + 1) % 15
+			else:
+				# Skip updating cmd_vel if key timeout and robot already
+				# stopped.
+				if key == '' and x == 0 and y == 0 and z == 0 and th == 0:
+				    continue
+				x = 0
+				y = 0
+				z = 0
+				th = 0
+				if (key == '\x03'):
+				    break
+			pub_thread.update(x, y, z, th, speed, turn)
+	except Exception as e:
+        	print(e)
 
-# \x03 is CTRL-C
-while key != '\x03':
-    key = getKey()
-    print(key)
+    	finally:
+        pub_thread.stop()
 
