@@ -65,8 +65,8 @@ class ThreadPublisher(threading.Thread):
 		self.start()
 		
 	def update(self, x, y, z, th, speed, turn):
-        	self.condition.acquire()
-        	self.x = x
+		self.condition.acquire()
+		self.x = x
 		self.y = y
 		self.z = z
 		self.th = th
@@ -179,7 +179,6 @@ if __name__=="__main__":
 			pub_thread.update(x, y, z, th, speed, turn)
 	except Exception as e:
         	print(e)
-
-    	finally:
-        pub_thread.stop()
+	finally:
+		pub_thread.stop()
 
