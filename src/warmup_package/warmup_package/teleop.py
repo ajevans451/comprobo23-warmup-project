@@ -3,11 +3,12 @@ import select
 import sys
 import termios
 
-import rospy
+import rclpy
+
 from geometry_msgs.msg import TwistStamped
 
 import threading
-
+rospy = rclpy
 # this is the git repo with the original turtlesim teleop, i'm trying to make sense of it
 # https://github.com/ros-teleop/teleop_twist_keyboard/blob/master/teleop_twist_keyboard.py
 
