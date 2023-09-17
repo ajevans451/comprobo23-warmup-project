@@ -21,7 +21,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'warmup_node = warmup_package.warmup_node:main'
+            'warmup_node = warmup_package.warmup_node:main',
             'teleop = warmup_package.teleop:main'
             #'drive_square = warmup_package.drive_square:main'
             #'wall_follower = warmup_package.wall_follower:main'
