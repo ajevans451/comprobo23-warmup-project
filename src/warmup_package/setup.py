@@ -21,6 +21,13 @@ setup(
     entry_points={
         'console_scripts': [
             'warmup_node = warmup_package.warmup_node:main'
+            'teleop = warmup_package.teleop:main'
+            #'drive_square = warmup_package.drive_square:main'
+            #'wall_follower = warmup_package.wall_follower:main'
+            #'person_follower = warmup_package.person_follower:main'
+            #'obstacle_avoider = warmup_package.obstacle_avoider:main'
+            #'finite_state_controller = warmup_package.finite_state_controller:main'
+            #'sphere_marker = warmup_package.sphere_marker:main'
         ],
     },
 )
