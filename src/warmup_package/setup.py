@@ -15,8 +15,9 @@ setup(
     zip_safe=True,
     maintainer='aj',
     maintainer_email='aj@todo.todo',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='Moves the Neato and does essential navigation actions\
+        with a Neato botvac for CompRobo23',
+    license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
