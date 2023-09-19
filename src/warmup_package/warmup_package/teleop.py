@@ -4,10 +4,11 @@ import sys
 import termios
 
 import rclpy
+from rclpy.node import Node
 
 from geometry_msgs.msg import TwistStamped
 
-import threading
+from threading import Thread, Condition
 rospy = rclpy
 # this is the git repo with the original turtlesim teleop, i'm trying to make sense of it
 # https://github.com/ros-teleop/teleop_twist_keyboard/blob/master/teleop_twist_keyboard.py
@@ -50,7 +51,7 @@ speedBindings = {
         'm':(1,.9),
 }
 
-class ThreadPublisher(threading.Thread):
+class ThreadPublisher(Node):
 	def __init__(self):
 		super(ThreadPublisher, self).__init__()
 		self.publisher = rospy.Publisher('cmd_vel', TwistStamped, queue_size = 1)
@@ -60,7 +61,7 @@ class ThreadPublisher(threading.Thread):
 		self.th = 0.0
 		self.speed = 0.0
 		self.turn = 0.0
-		self.condition = threading.Condition()
+		self.condition = Condition()
 		self.done = False
 		#self.timeout = None
 		self.start()
@@ -122,19 +123,21 @@ def getKey():
 
 def vels(speed, turn):
     return "currently:\tspeed %s\tturn %s " % (speed,turn)
-    
-if __name__=="__main__":
+
+
+def main(args=None):
+	rclpy.init(args=args)
+
 	settings = termios.tcgetattr(sys.stdin)
-	
-	rospy.init_node('teleop')
-	speed = rospy.get_param("~speed", 0.5)
-	turn = rospy.get_param("~turn", 1.0)
-	speed_limit = rospy.get_param("~speed_limit", 1000)
-	turn_limit = rospy.get_param("~turn_limit", 1000)
-	repeat = rospy.get_param("~repeat_rate", 0.0)
-	key_timeout = rospy.get_param("~key_timeout", 0.5)
-	stamped = rospy.get_param("~stamped", False)
-	twist_frame = rospy.get_param("~frame_id", '')
+
+	# speed = rospy.get_param("~speed", 0.5)
+	# turn = rospy.get_param("~turn", 1.0)
+	# speed_limit = rospy.get_param("~speed_limit", 1000)
+	# turn_limit = rospy.get_param("~turn_limit", 1000)
+	# repeat = rospy.get_param("~repeat_rate", 0.0)
+	# key_timeout = rospy.get_param("~key_timeout", 0.5)
+	# stamped = rospy.get_param("~stamped", False)
+	# twist_frame = rospy.get_param("~frame_id", '')
 	
 
 	pub_thread = PublishThread(repeat)
@@ -182,4 +185,12 @@ if __name__=="__main__":
         	print(e)
 	finally:
 		pub_thread.stop()
+
+	node = teleop()
+	rclpy.spin(node)
+	node.destroy_node()
+	rclpy.shutdown()
+
+if __name__=="__main__":
+	main()
 
