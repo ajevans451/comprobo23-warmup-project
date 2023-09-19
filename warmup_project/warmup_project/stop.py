@@ -2,6 +2,18 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 
+# from rclpy.qos import qos_profile_default
+
+# def main():
+#     pub = Node.create_publisher(Twist, 'cmd_vel', qos_profile_default)
+
+#     msg = Twist()
+#     msg.angular.z = 0.0
+#     msg.linear.x = 0.0
+#     vel_pub.publish(msg)
+#     pub.publish(msg)
+
+
 def main(args=None):
     rclpy.init(args=args)
     node = StopRobot()
@@ -24,7 +36,6 @@ class StopRobot(Node):
         msg.angular.z = 0.0
         msg.linear.x = 0.0
         self.vel_pub.publish(msg)
-        
 
 
 if __name__ == '__main__':
