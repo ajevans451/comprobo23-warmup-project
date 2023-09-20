@@ -28,13 +28,9 @@ txt = """
     CTRL-C to QUIT
 """
 def getKey():
-        print("getting key")
         tty.setraw(sys.stdin.fileno())
-        print("Set the raw")
         select.select([sys.stdin], [], [], 0)
-        print("Selected the sys")
         key = sys.stdin.read(1)
-        print("set value for Key")
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
         return key
 
@@ -75,33 +71,36 @@ class Teleop(Node):
 
     def update_velocity(self):
         """Updates the velocity, linear and angular."""
+        key = None
         msg = Twist() #Get the message formatted with the speeds
-        key = getKey()
-        if key in speedBindings.keys():
-            self.lin_scale = self.lin_scale * speedBindings[key][0]
-            self.ang_scale = self.ang_scale * speedBindings[key][1]
-        if key in directionBindings.keys():
-             self.lin_dir = directionBindings[key][0]
-             self.ang_dir = directionBindings[key][1]
-        msg.linear.x = directionBindings[key][0]*self.lin_scale
-        msg.angular.z = directionBindings[key][1]*self.ang_scale
-        self.vel_pub.publish(msg) #pub changes after setting the values in the twist message
+        while key != '\x03':
+            key = getKey()
+            print(key)
+            print('got key')
+            if key in speedBindings.keys(): #.keys() is the native dictionary key ennumerator in python
+                self.lin_scale = self.lin_scale * speedBindings[key][0]
+                self.ang_scale = self.ang_scale * speedBindings[key][1]
+                vels(self.lin_scale,self.ang_scale)
+
+            elif key in directionBindings.keys():
+                self.lin_dir = directionBindings[key][0]
+                self.ang_dir = directionBindings[key][1]
+
+            # blin.der haha funny joke
+            msg.linear.x = self.lin_dir*self.lin_scale
+            msg.angular.z = self.ang_dir*self.ang_scale
+            self.vel_pub.publish(msg) #pub changes after setting the values in the twist message
     def run_loop(self):
+        print('run_loop()')
         self.update_velocity()
-        vels(self.lin_scale,self.ang_scale)
-        print("Did vels")
 
 def main(args=None):
     rclpy.init(args=args)
     print("initiated")
     Tnode = Teleop()
-    print(type(Tnode))
-    print("arbys")
-    print(f"the node type is {type(Tnode)}")
     Tnode.create_timer(0.1,Tnode.run_loop())
     rclpy.spin(Tnode)
     rclpy.shutdown()
-
 
 
 if __name__ == '__main__':
