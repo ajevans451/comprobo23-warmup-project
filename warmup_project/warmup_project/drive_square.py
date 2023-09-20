@@ -8,11 +8,12 @@ class DriveSquareSample1(Node):
         super().__init__('drive_square_sample_1')
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
         self.create_timer(0.1, self.run_loop)
-        self.turns_executed = 0
+        self.turns_executed = 4
         self.executing_turn = False
-        self.side_length = 0.5      # the length in meters of a square side
-        self.time_per_side = 5.0    # duration in seconds to drive the square side
-        self.time_per_turn = 2.0    # duration in seconds to turn 90 degrees
+        self.side_length = 1      # the length in meters of a square side
+        self.time_per_side = 4    # duration in seconds to drive the square side
+        self.time_per_turn = 1.83    # duration in seconds to turn 90 degrees
+        self.stop_wait = 0.5 # duration in seconds to dwell between turns
         # start_time_of_segment indicates when a particular part of the square was
         # started (e.g., a straight segment or a turn)
         self.start_time_of_segment = None   
@@ -46,7 +47,7 @@ class DriveSquareSample1(Node):
         # here, I use self.get_clock().now() which is better than using time.time() since it works
         # equally well with simulator or wall clock time (e.g., the simulator might not run
         # at real-time).  You are totally fine using time.time(), but I wanted to show this.
-        if self.get_clock().now() - self.start_time_of_segment > rclpy.time.Duration(seconds=segment_duration):
+        if self.get_clock().now() - (self.start_time_of_segment ) > rclpy.time.Duration(seconds=segment_duration):
             if self.executing_turn:
                 self.turns_executed += 1
             # toggle the executing_turn Boolean (turn to not turn or vice versa)

@@ -68,6 +68,7 @@ class Teleop(Node):
         self.ang_scale = 1.0
         self.lin_dir = 0
         self.ang_dir = 0
+        print(txt)
 
     def update_velocity(self):
         """Updates the velocity, linear and angular."""
@@ -75,8 +76,6 @@ class Teleop(Node):
         msg = Twist() #Get the message formatted with the speeds
         while key != '\x03':
             key = getKey()
-            print(key)
-            print('got key')
             if key in speedBindings.keys(): #.keys() is the native dictionary key ennumerator in python
                 self.lin_scale = self.lin_scale * speedBindings[key][0]
                 self.ang_scale = self.ang_scale * speedBindings[key][1]
@@ -91,12 +90,11 @@ class Teleop(Node):
             msg.angular.z = self.ang_dir*self.ang_scale
             self.vel_pub.publish(msg) #pub changes after setting the values in the twist message
     def run_loop(self):
-        print('run_loop()')
         self.update_velocity()
 
 def main(args=None):
     rclpy.init(args=args)
-    print("initiated")
+    print("Node Initiated.")
     Tnode = Teleop()
     Tnode.create_timer(0.1,Tnode.run_loop())
     rclpy.spin(Tnode)

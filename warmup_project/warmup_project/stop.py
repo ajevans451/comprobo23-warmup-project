@@ -17,8 +17,6 @@ from geometry_msgs.msg import Twist
 def main(args=None):
     rclpy.init(args=args)
     node = StopRobot()
-    rclpy.spin(node)
-    rclpy.shutdown()
 
 
 class StopRobot(Node):
@@ -26,7 +24,7 @@ class StopRobot(Node):
         super().__init__('stop')
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
         self.stop()
- 
+
 
     def stop(self):
         """ In the run_loop the robot has a command to stop. After the robot
