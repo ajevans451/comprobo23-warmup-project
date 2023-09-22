@@ -19,7 +19,7 @@ setup(
                 comprobo23.github.io/',
     license='MIT',
     tests_require=['pytest'],
-    entry_points={
+    entry_points={ #Has all the python files without the .py for colcon
         'console_scripts': [
             'teleop = warmup_project.teleop:main',
             'drive_square = warmup_project.drive_square:main',
@@ -28,6 +28,7 @@ setup(
             'obstacle_avoider = obstacle_avoider.teleop:main',
             'person_follower = person_follower.teleop:main',
             'stop = warmup_project.stop:main',
+            'marker = warmup_project.marker:main'
         ],
     },
 )

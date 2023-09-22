@@ -1,4 +1,4 @@
-#Node and robot command boilerplate
+ dire#Node and robot command boilerplate
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
@@ -39,7 +39,7 @@ def vels(speed,turn):
 
 
 directionBindings = {
-    # affixing the key/value pair to a list with only 2 values (linear direction/turn direction) might be a mistake if we're intended to leverage the existing Twist msgs but i'm trying it anyway
+    # Linear, then angular, unit vectors for each direction key, ie full linear and 0 angular for "W", the ahead key.
     'q':(1,1), 
     'w':(1,0),
     'e':(1,-1),
@@ -92,6 +92,7 @@ class Teleop(Node):
         msg.linear.x = self.lin_dir*self.lin_scale
         msg.angular.z = self.ang_dir*self.ang_scale
         self.vel_pub.publish(msg) #pub changes after setting the values in the twist message
+    
     def run_loop(self):
         self.update_velocity()
 
