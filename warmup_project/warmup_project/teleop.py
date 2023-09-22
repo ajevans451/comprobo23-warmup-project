@@ -64,6 +64,7 @@ class Teleop(Node):
     def __init__(self):
         super().__init__("teleop")
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
+        self.create_timer(0.1,self.run_loop)
         self.lin_scale = 1.0
         self.ang_scale = 1.0
         self.lin_dir = 0
@@ -74,29 +75,31 @@ class Teleop(Node):
         """Updates the velocity, linear and angular."""
         key = None
         msg = Twist() #Get the message formatted with the speeds
-        while key != '\x03':
-            key = getKey()
-            if key in speedBindings.keys(): #.keys() is the native dictionary key ennumerator in python
-                self.lin_scale = self.lin_scale * speedBindings[key][0]
-                self.ang_scale = self.ang_scale * speedBindings[key][1]
-                vels(self.lin_scale,self.ang_scale)
+        key = getKey()
+        if key == '\x03':
+            self.destroy_node()
+            return
+        if key in speedBindings.keys(): #.keys() is the native dictionary key ennumerator in python
+            self.lin_scale = self.lin_scale * speedBindings[key][0]
+            self.ang_scale = self.ang_scale * speedBindings[key][1]
+            vels(self.lin_scale,self.ang_scale)
 
-            elif key in directionBindings.keys():
-                self.lin_dir = directionBindings[key][0]
-                self.ang_dir = directionBindings[key][1]
+        elif key in directionBindings.keys():
+            self.lin_dir = directionBindings[key][0]
+            self.ang_dir = directionBindings[key][1]
 
-            # blin.der haha funny joke
-            msg.linear.x = self.lin_dir*self.lin_scale
-            msg.angular.z = self.ang_dir*self.ang_scale
-            self.vel_pub.publish(msg) #pub changes after setting the values in the twist message
+        # blin.der haha funny joke
+        msg.linear.x = self.lin_dir*self.lin_scale
+        msg.angular.z = self.ang_dir*self.ang_scale
+        self.vel_pub.publish(msg) #pub changes after setting the values in the twist message
     def run_loop(self):
         self.update_velocity()
 
 def main(args=None):
+
     rclpy.init(args=args)
     print("Node Initiated.")
     Tnode = Teleop()
-    Tnode.create_timer(0.1,Tnode.run_loop())
     rclpy.spin(Tnode)
     rclpy.shutdown()
 
