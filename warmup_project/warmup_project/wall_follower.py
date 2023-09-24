@@ -20,6 +20,7 @@ class WallFollower(Node):
         """ outputs the wheel velocities needed to make the robot get closer to following the wall."""
         turnAmount = 0
         distance = self.scanValues
+        print(distance)
         if self.followingLeft == True:
             #comparing 45 and 135 (front and back)
             if distance[2] > distance[3]:
@@ -43,18 +44,18 @@ class WallFollower(Node):
         if self.scanValues == []:
             pass #handle invalid values in important angles (zero)
         if self.scanValues[0] >= self.scanValues[1]:
-            self.followingLeft = True #will be true if the 180-degree left hand size is closer.
-        else:
+            self.followingLeft = True #will be true if the LHS distance is closer.
+        else: #RHS wall is closer
             self.followingLeft = False
 
     def readLidar(self, msg):
-        angles = [90, 180, 45, 135, 225, 315]
+        angles = [90, 270, 45, 135, 225, 315]
         self.scanValues = [] # Should give an empty list for appending
-        print(msg.ranges)
+        print(f"this is {msg.ranges}")
+        print(f"this is {msg.ranges}")
         for value in angles:
             self.scanValues.append(msg.ranges[value]) #Should leave us with a 6-element list
-
-        if self.scanValues.includes(0):
+        if 0 in self.scanValues:
             self.scanValues = []
         return self.ChooseSide()
 
