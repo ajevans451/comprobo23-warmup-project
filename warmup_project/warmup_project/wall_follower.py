@@ -23,7 +23,8 @@ class WallFollower(Node):
         """ outputs the wheel velocities needed to make the robot get closer to following the wall."""
         turnAmount = float(0)
         distance = self.scanValues
-        print(f"scan values are {distance}")
+        #print(f"scan values are {distance}") #Print statement for debugging
+
         if self.scanValues != []:
             if self.followingLeft == True:
                 #comparing 45 and 135 (front and back)
@@ -55,12 +56,16 @@ class WallFollower(Node):
             self.followingLeft = False
 
     def readLidar(self, msg):
-        print(type(msg.ranges))
+        #print(type(msg.ranges))
         if isinstance(msg.ranges,array):
             print("array found")
             self.scanValues.clear() # Should give an empty list for appending
             for value in self.angles:
-                self.scanValues.append(msg.ranges[value]) #Should leave us with a 6-element list
+                print(f"value is {msg.ranges[value]}")
+                if msg.ranges[value] >= 0.05 and msg.ranges[value] <= 50:
+                    self.scanValues.append(msg.ranges[value]) #Should leave us with a 6-element list
+                else:
+                    print("Scan rejected")
         else:
             print("Lidar wasn't an array")
 
