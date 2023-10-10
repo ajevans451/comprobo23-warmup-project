@@ -69,17 +69,9 @@ class WallFollower(Node):
             print("array found")
             self.scanValues.clear() # Should give an empty list for appending
             for value in self.angles:
-<<<<<<< HEAD
                 #average 5 distances around angles of interest
                 avg = statistics.mean([msg.ranges[value - 2],msg.ranges[value - 1], msg.ranges[value], msg.ranges[value + 1], msg.ranges[value + 2]])
                 self.scanValues.append(avg) #Should leave us with a 6-element list
-=======
-                print(f"value is {msg.ranges[value]}")
-                if msg.ranges[value] >= 0.05 and msg.ranges[value] <= 50:
-                    self.scanValues.append(msg.ranges[value]) #Should leave us with a 6-element list
-                else:
-                    print("Scan rejected")
->>>>>>> 7eeb82c05b55d170f63a12deac4610f8fda221fb
         else:
             print("Lidar wasn't an array")
 
