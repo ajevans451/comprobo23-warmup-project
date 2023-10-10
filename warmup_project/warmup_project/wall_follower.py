@@ -3,6 +3,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 import math
+import statistics
 from sensor_msgs.msg import LaserScan
 from array import array
 
@@ -23,25 +24,29 @@ class WallFollower(Node):
         """ outputs the wheel velocities needed to make the robot get closer to following the wall."""
         turnAmount = float(0)
         distance = self.scanValues
-        print(f"scan values are {distance}")
         if self.scanValues != []:
+            print(f"scan values are {distance}")
             if self.followingLeft == True:
                 #comparing 45 and 135 (front and back)
-                if distance[2] > distance[3]:
-                    turnAmount = self.kp*distance[2]/distance[3]
+                if abs(distance[2]-distance[3]) < 0.01:
+                    turnAmount = 0
+                elif distance[2] > distance[3]:
+                    turnAmount = (abs(distance[2]-distance[3]))
                 elif distance[2] < distance[3]:
-                    turnAmount = -1*(distance[3]/distance[2])
+                    turnAmount = -1*(abs(distance[3]-distance[2]))
                 else:
                     turnAmount = 0
             else:
                 #comparing 315 and 225
-                if distance[5] > distance[4]:
-                    turnAmount = -1*(distance[5]/distance[4])
+                if abs(distance[5]-distance[4]) < 0.01:
+                    turnAmount = 0
+                elif distance[5] > distance[4]:
+                    turnAmount = -1*abs(distance[5]-distance[4])
                 elif distance[5] < distance[4]:
-                    turnAmount = distance[4]/distance[5]
+                    turnAmount = abs(distance[4]-distance[5])
                 else:
                     turnAmount = 0
-        return self.kp*turnAmount
+        return turnAmount
 
     def ChooseSide(self):
         ''' Returns which side the neato is probably following a wall on.
@@ -49,25 +54,25 @@ class WallFollower(Node):
             right will be further away than the left.'''
         if self.scanValues == []: # Lidar isn't an array yet.
             pass
+        elif abs(self.scanValues[0] - self.scanValues[1]) < 0.1:
+            self.followingLeft = True
         elif self.scanValues[0] >= self.scanValues[1]:
             self.followingLeft = True #will be true if the LHS distance is closer.
         else: #RHS wall is closer
             self.followingLeft = False
+        print(self.followingLeft)
 
     def readLidar(self, msg):
-        print(type(msg.ranges))
+        #print(type(msg.ranges))
         if isinstance(msg.ranges,array):
             print("array found")
             self.scanValues.clear() # Should give an empty list for appending
             for value in self.angles:
-                self.scanValues.append(msg.ranges[value]) #Should leave us with a 6-element list
+                #average 5 distances around angles of interest
+                avg = statistics.mean([msg.ranges[value - 2],msg.ranges[value - 1], msg.ranges[value], msg.ranges[value + 1], msg.ranges[value + 2]])
+                self.scanValues.append(avg) #Should leave us with a 6-element list
         else:
             print("Lidar wasn't an array")
-
-
-        # TODO: FIRST: add print statements and make the node runnable. Get ride of pseudocode and just make it run. See where the data types print.
-        # SECOND: GET LIDAR SCANS THAT ARE GOOD, which means they don't have 0s in the 45 etc ranges that we care about.
-        # THIRD, add a proportional multiplier to the output of the angular output commands. Test the neato.
 
     def updateVelocity(self):
         vels = Twist()
