@@ -10,11 +10,10 @@ https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html
 We also used the following packages, which you can install with the following command:
 
 ```python
-```sudo apt-get update && sudo apt-get install -y NAMES-OF-PACKAGES```
+sudo apt-get update && sudo apt-get install -y NAMES-OF-PACKAGES
 
 Followed by each of the following packages:
 
-```
 ros-humble-gazebo-ros-pkgs \
 ros-humble-nav2-bringup \
 ros-humble-navigation2  \
@@ -48,47 +47,55 @@ colcon-build --symlink-install
 ``` 
 
 ## Behaviors
-Most of the behaviors we developed for the warmup project are stored in separate executables. Notable details of each is described
+Most of the behaviors we developed for the warmup project are stored in separate executables. Notable details of each are described below.
 
-### Teleop: Custom Teleoperation
-We developed a keyboard-capturing node that will allow you to drive the neato around using the WASD key paradigm rather than the stock K-centered series of keys
+### teleop: Custom Teleoperation
+
+We developed a keyboard-capturing node that will allow you to drive the NEATO around using the WASD key paradigm rather than the stock K-centered series of keys.
+```python 
 	q  w  e
 	a  -  d
 	z  s  c
-  -------------------
+
     spacebar : STOP
     
     o/p : increase speeds (both linear and angular) by 10%
     k/l : increase linear speed by 10%
     n/m : increase angular speed by 10%
+```
 
-### Square Drive
+### drive_square: Square Drive
 The NEATO leverages a timer to drive in a square. Using known angular and linear speeds, the NEATO is able to calculate how far it is turning by keeping track of how long it is turning.
 
 #### Square Drive Demo Video
-[TODO: Peek video goes here] 
+![drive_square Demo](/Screenshots/drive_square.gif)
 
-### Wall Following
-To detect a wall to follow, the NEATO would use the LiDAR to scan the sides of the NEATO at 90 and 180 degrees to determine if there was a closer wall on its right or left. 
+### wall_follower: Wall Following
+To detect a wall to follow, the NEATO will use the LiDAR to scan the sides of the NEATO at 90 and 180 degrees to determine if there was a closer wall on its right or left. 
 ![Diagram of the NEATO examining the distances from it at 45, 135, 225, and 315 degrees](/images/wall_following_diagram.png)
-Once it determined which side was closer to a wall, it set itself to either following on the right or on the left. If it was following on the right, it would compare the distances read from the LiDAR for angles 45 and 135, comparing them and adjusting its wheel velocities to keep them equal, and therefore keep itself parallel to the wall. If it was following on the left, it would compare the distance for angles 225 and 315.
+Once it determined which side was closer to a wall, it set itself to either following on the right or on the left. If it was following on the right, it will compare the distances read from the LiDAR for angles 45 and 135, comparing them and adjusting its wheel velocities to keep them equal, and therefore keep itself parallel to the wall. If it was following on the left, it will compare the distance for angles 225 and 315.
 
-### Person Following
-When following people, the NEATO would assume the person it was following would be nearby and in front of it, so it would take the LiDAR distance readings for a frontal cone (350-10 degrees), filter out distances that were beyond a certain threshold and set its heading towards that nearest object.
+### person_follower: Person Following
+When following people, the NEATO will assume the person it was following will be nearby and in front of it, so it will take the LiDAR distance readings for a frontal cone (350-10 degrees), filter out distances that were beyond a certain threshold and set its heading towards that nearest object. It will stop once it is 0.5 meters away from the front bumper of the neato. We included a Marker topic Publisher that will publish the intended location of the Neato, viewable using rviz2.
 
-### Obstacle Avoidance
-To avoid obstacles, the NEATO would drive forward at whatever its initial orientation was until the LiDAR detected an object that was within the distance threshold. Once it determined there was an obstacle, it would stop and turn 45 degrees clockwise and then check what was immediately in front of itself. If there was no obstacle in its path, it would proceed in that direction around the obstacle; if it detected another obstacle, it would repeat the turning step until there was a clear path.
+### obstacle_avoider: Obstacle Avoidance
+The NEATO will have a goal location to attain. If it encounters an obstacle on the way to that goal, it will then give a 0.25 meter berth to that obstacle and travel as close as possible to the goal location. Like in person_follower, we include a Publisher that will publish the intended next location of the Neato using rviz2. To avoid obstacles, the NEATO will drive forward at whatever its initial orientation was until the LiDAR detected an object that was within the distance threshold. Once it determined there was an obstacle, it will stop and turn 45 degrees clockwise and then check what was immediately in front of itself. If there was no obstacle in its path, it will proceed in that direction around the obstacle; if it detected another obstacle, it will repeat the turning step until there was a clear path.
 
-### finite_state_controller: Follows obstacles while 
-For the finite state controller, what was the overall behavior. What were the states? What did the robot do in each state? How did you combine and how did you detect when to transition between behaviors?  Consider including a state transition diagram in your writeup.
+### finite_state_controller: Explores and Follows People 
+Our finite state controller will initialize by having the NEATO wander in a square. If the NEATO detects a wall first, it will follow the wall until it detects a person. Once the NEATO detects a person, it will follow the person. If the person runs away, the NEATO will just go back to drive in a square. If it is still near a wall, it will begin following the wall until it finds another person to follow, and the cycle repeats.
+
+![Finite-State Machine Diagram](/images/fsm.jpg)
+
+### stop: Convenient Halt Command
+This no-frills module will send a single stop command to the NEATO, then shut down.
+
 ### Object-Oriented Structure
-*AJ*: Can you add the diagram we made before, if you have one? Otherwise the document I sent on Discord will be a good place to create the diagram.
-
+Each node is initially defined in its own .py file. Each file defines classes, so multiple instances of the same class can run at one time.
 
 ## Reflection
 We were successful in the learning objectives of the project. After an unexpected library/school community emergency, we struggled to submit the project. Afterwards, we focused on future course curriculum. Both of our Ubuntu installations required a re-install before we were able to run the simulator, which subjected us to hardware issues at the beginning of our development process.
 ### Room for Improvement
-To improve our project, we would implement a more sophisticated person follower algorithm that ignores stationary obstacles in the view window in favor of a moving obstacle.
+To improve our project, we will implement a more sophisticated person follower algorithm that ignores stationary obstacles in the view window in favor of a moving obstacle.
 ### Key Takeaways
 What are the key takeaways from this assignment for future robotic programming projects? For each takeaway, provide a sentence or two of elaboration.
 

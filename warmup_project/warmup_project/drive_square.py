@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from math import pi
+import time
 
 class DriveSquareSample1(Node):
     def __init__(self):
@@ -12,7 +13,7 @@ class DriveSquareSample1(Node):
         self.executing_turn = False
         self.side_length = 1      # the length in meters of a square side
         self.time_per_side = 4    # duration in seconds to drive the square side
-        self.time_per_turn = 1.83    # duration in seconds to turn 90 degrees
+        self.time_per_turn = 1.5    # duration in seconds to turn 90 degrees
         self.stop_wait = 0.5 # duration in seconds to dwell between turns
         # start_time_of_segment indicates when a particular part of the square was
         # started (e.g., a straight segment or a turn)
@@ -36,7 +37,7 @@ class DriveSquareSample1(Node):
                 4. publish the velocity command 
             """
         if self.start_time_of_segment is None:
-            self.start_time_of_segment = self.time().time()
+            self.start_time_of_segment = self.get_clock().now()
         msg = Twist()
         if self.executing_turn:
             segment_duration = self.time_per_turn
@@ -47,7 +48,7 @@ class DriveSquareSample1(Node):
         # here, I use self.get_clock().now() which is better than using time.time() since it works
         # equally well with simulator or wall clock time (e.g., the simulator might not run
         # at real-time).  You are totally fine using time.time(), but I wanted to show this.
-        if self.time().time() - (self.start_time_of_segment ) > rclpy.time.Duration(seconds=segment_duration):
+        if self.get_clock().now() - (self.start_time_of_segment ) > rclpy.time.Duration(seconds=segment_duration):
             if self.executing_turn:
                 self.turns_executed += 1
             # toggle the executing_turn Boolean (turn to not turn or vice versa)
@@ -59,7 +60,7 @@ class DriveSquareSample1(Node):
             if self.executing_turn:
                 # we are trying to turn pi/2 radians in a particular amount of time
                 # from this we can get the angular velocity
-                msg.angular.z = (pi / 2) / segment_duration # 90 degrees
+                msg.angular.z = 1.02*(pi / 2) / segment_duration # 90 degrees
             else:
                 msg.linear.x = self.side_length / segment_duration
         self.vel_pub.publish(msg) 
