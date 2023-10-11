@@ -39,17 +39,26 @@ As of September 2023, the homepage for this project is [github/ajevans451/compro
 ## Behaviors
 For each behavior, describe the problem at a high-level. Include any relevant diagrams that help explain your approach.  Discuss your strategy at a high-level and include any tricky decisions that had to be made to realize a successful implementation.
 ### Custom Teleop
-### Wall Following
+
+
 ### Square Drive
+The NEATO leverages a timer to drive in a square. Using known angular and linear speeds, the NEATO is able to calculate how far it is turning by keeping track of how long it is turning.
+
+### Wall Following
+To detect a wall to follow, the NEATO would use the LiDAR to scan the sides of the NEATO at 90 and 180 degrees to determine if there was a closer wall on its right or left. 
+![Diagram of the NEATO examining the distances from it at 45, 135, 225, and 315 degrees](/images/wall_following_diagram.png)
+Once it determined which side was closer to a wall, it set itself to either following on the right or on the left. If it was following on the right, it would compare the distances read from the LiDAR for angles 45 and 135, comparing them and adjusting its wheel velocities to keep them equal, and therefore keep itself parallel to the wall. If it was following on the left, it would compare the distance for angles 225 and 315.
+
 ### Person Following
+When following people, the NEATO would assume the person it was following would be nearby and in front of it, so it would take the LiDAR distance readings for a frontal cone (350-10 degrees), filter out distances that were beyond a certain threshold and set its heading towards that nearest object.
+
 ### Obstacle Avoidance
+To avoid obstacles, the NEATO would drive forward at whatever its initial orientation was until the LiDAR detected an object that was within the distance threshold. Once it determined there was an obstacle, it would stop and turn 45 degrees clockwise and then check what was immediately in front of itself. If there was no obstacle in its path, it would proceed in that direction around the obstacle; if it detected another obstacle, it would repeat the turning step until there was a clear path.
+
 ### Finite State Controller
 For the finite state controller, what was the overall behavior. What were the states? What did the robot do in each state? How did you combine and how did you detect when to transition between behaviors?  Consider including a state transition diagram in your writeup.
 ### Object-Oriented Structure
 How was your code structured? Make sure to include a sufficient detail about the object-oriented structure you used for your project.
-#### foo 
-
-#### bar
 
 ## Reflection
 What if any challenges did you face along the way?
@@ -57,9 +66,6 @@ What if any challenges did you face along the way?
 What would you do to improve your project if you had more time?
 ### Key Takeaways
 What are the key takeaways from this assignment for future robotic programming projects? For each takeaway, provide a sentence or two of elaboration.
-#### foo
-
-#### Barbie
 
 ## Authors
 
