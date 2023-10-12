@@ -48,10 +48,11 @@ colcon-build --symlink-install
 ``` 
 
 ## Behaviors
-Most of the behaviors we developed for the warmup project are stored in separate executables. Notable details of each is described
+Most of the behaviors we developed for the warmup project are stored in separate executables. Notable details of each is described below:
 
 ### Teleop: Custom Teleoperation
-We developed a keyboard-capturing node that will allow you to drive the neato around using the WASD key paradigm rather than the stock K-centered series of keys
+We developed a keyboard-capturing node that will allow you to drive the neato around using the WASD key paradigm rather than the stock K-centered series of keys.
+  -------------------
 	q  w  e
 	a  -  d
 	z  s  c
